@@ -1,16 +1,38 @@
+import { useEffect, useState } from "react";
 import "./App.css";
 import ReminderList from "./component/ReminderList";
 import Reminder from "./interface/reminder";
-
-const items: Reminder[] = [
-  { id: 1, title: "Reminder 1" },
-  { id: 2, title: "Reminder 2" },
-];
+import ReminderService from "./services/reminder";
+import NewReminder from "./component/NewReminder";
 
 function App() {
+  const [reminders, setReminders] = useState<Reminder[]>([]);
+
+  useEffect(() => {
+    fetchReminders();
+  }, []);
+
+  const fetchReminders = async () => {
+    const reminders = await ReminderService.getReminders();
+    setReminders(reminders);
+  };
+
+  const handleOnReminderRemove = (id: number) => {
+    setReminders(reminders.filter((item) => item.id !== id));
+  };
+
+  const onAddReminder = async (title: string) => {
+    const newReminder = await ReminderService.postReminder(title);
+    setReminders([newReminder, ...reminders]);
+  };
+
   return (
     <>
-      <ReminderList items={items} />
+      <NewReminder onAddReminder={onAddReminder} />
+      <ReminderList
+        reminders={reminders}
+        onRemoveReminder={handleOnReminderRemove}
+      />
     </>
   );
 }

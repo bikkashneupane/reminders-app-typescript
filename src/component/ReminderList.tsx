@@ -1,13 +1,22 @@
 import Reminder from "../interface/reminder";
-
 interface ReminderListProps {
-  items: Reminder[];
+  reminders: Reminder[];
+  onRemoveReminder: (id: number) => void;
 }
-function ReminderList({ items }: ReminderListProps) {
+
+function ReminderList({ reminders, onRemoveReminder }: ReminderListProps) {
   return (
-    <ul>
-      {items.map((item) => (
-        <li key={item.id}>{item.title}</li>
+    <ul className="list-group">
+      {reminders.map((item) => (
+        <li className="list-group-item" key={item.id}>
+          <span>{item.title}</span>
+          <button
+            className="btn btn-outline-danger mx-2 rounded-pill"
+            onClick={() => onRemoveReminder(item.id)}
+          >
+            Delete
+          </button>
+        </li>
       ))}
     </ul>
   );
